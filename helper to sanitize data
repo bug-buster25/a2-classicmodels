@@ -1,0 +1,11 @@
+def sanitize_for_mongo(doc):
+    if isinstance(doc, dict):
+        return {k: sanitize_for_mongo(v) for k, v in doc.items()}
+    elif isinstance(doc, list):
+        return [sanitize_for_mongo(item) for item in doc]
+    elif isinstance(doc, decimal.Decimal):
+        return float(doc)
+    elif isinstance(doc, datetime.date) and not isinstance(doc, datetime.datetime):
+        return datetime.datetime.combine(doc, datetime.time())
+    else:
+        return doc
